@@ -29,7 +29,7 @@ const Payment = {
             const { status, status_detail, id } = await responseGateway.body;
             
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
     
@@ -37,8 +37,7 @@ const Payment = {
                             TB_ORDER (num_order, date_order, qtda_products, total_order, id_customer)
                             VALUES (?, ?, ?, ?, ?)`; 
 
-            const response = await connectionDatabase.query(sql, values);
-            const statusInsert = response.rows;
+            const statusInsert = await connectionDatabase.query(sql, values);
             console.log(statusInsert);
 
             res.status(response.status).json({ status, status_detail, id });

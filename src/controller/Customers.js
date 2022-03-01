@@ -28,39 +28,27 @@ const Customers = {
     async postCustomer(req, res) {
 
         const customer = req.body;
-
-        console.log(customer)
-
-        // const isValid = Customers.helpers.validFields(customer);
-
-        // if(isValid != true) {
-
-        //     const message = isValid.reduce((message, [key, value]) => {
-        //         message += `Campo ${key} não está preenchido \n`;
-        //         return message;
-        //     }, '')
-
-        //     return res.status(400).json({ error_message: message })
-        // }
+        console.log(customer);
 
         const values = [
             customer.cpf,
             customer.email,
+			customer.password,
             customer.first_name,
             customer.last_name,
-            customer.age
+            customer.date_birth
         ];
 
         try {
 
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
 
             const sql = `INSERT INTO
-                            TB_CUSTOMER (cpf, email, first_name, last_name, age)
-                            VALUES (?, ?, ?, ?, ?)`; 
+                            TB_CUSTOMER (cpf, email, password, first_name, last_name, date_birth)
+                            VALUES ($1, $2, $3, $4, $5, $6)`; 
 
             const response = await connectionDatabase.query(sql, values);
             const statusInsert = response.rows;
@@ -90,7 +78,7 @@ const Customers = {
         try {
 
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
 
@@ -125,7 +113,7 @@ const Customers = {
         try {
 
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
 

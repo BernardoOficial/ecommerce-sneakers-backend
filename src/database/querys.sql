@@ -1,15 +1,3 @@
--- CRIAR TABELA CLIENTE
-DROP TABLE IF EXISTS TB_CUSTOMER;
-
-CREATE TABLE TB_CUSTOMER (
-	id_customer SERIAL PRIMARY KEY,
-  	cpf VARCHAR(11) UNIQUE NOT NULL,
-  	email VARCHAR(30) UNIQUE NOT NULL,
-  	first_name VARCHAR(30) NOT NULL,
-  	last_name VARCHAR(60) NOT NULL,
-  	age INTEGER NOT NULL
-);
-
 INSERT INTO TB_CUSTOMER (cpf, email, first_name, last_name, age)
 VALUES 
 	('11111111111', 'bernardo@usebob.com.br', 'Bernardo', 'Pereira', 20),
@@ -18,6 +6,8 @@ VALUES
     ('44444444444', 'alfredo@usebob.com.br', 'Alfredo', 'Pereira', 45);
     
 SELECT * FROM TB_CUSTOMER;
+
+DELETE FROM TB_CUSTOMER WHERE id_customer = 2;
 
 UPDATE TB_CUSTOMER
 SET
@@ -29,43 +19,31 @@ SET
 WHERE id_customer = 1;
 
 
+SELECT * FROM TB_CUSTOMER_TOKEN;
+DELETE FROM TB_CUSTOMER_TOKEN WHERE id_customer = 4;
 
 
-
--- CRIAR TABELA PRODUTO
-DROP TABLE IF EXISTS TB_PRODUCT;
-
-CREATE TABLE TB_PRODUCT (
-	id_product SERIAL PRIMARY KEY,
-  	title VARCHAR(30) NOT NULL,
-  	description VARCHAR(255) NOT NULL,
-  	status VARCHAR(15) NOT NULL DEFAULT 'disabled',
-  	sku VARCHAR(15) NOT NULL,
-  	price NUMERIC(9, 2) NOT NULL DEFAULT 0.0,
-  	compare_at_price NUMERIC(9, 2) NOT NULL DEFAULT 0.0,
-  	stock_quantity INTEGER NOT NULL DEFAULT 0,
-  	url_image_1 VARCHAR(80) DEFAULT '',
-    url_image_2 VARCHAR(80) DEFAULT '',
-    url_image_3 VARCHAR(80) DEFAULT '',
-    url_image_4 VARCHAR(80) DEFAULT ''
-);
-
-INSERT INTO TB_PRODUCT (title, 
-                        description, 
-                        status, 
-                        sku, 
-                        price, 
-                        compare_at_price, 
-                        stock_quantity, 
-                        url_image_1, 
-                        url_image_2, 
-                        url_image_3, 
-                        url_image_4)
+INSERT INTO TB_PRODUCT
+(title, status, sku, price, compare_at_price, stock_quantity, 
+ url_images, description)
 VALUES
-	('shampoo purificante', 'ativo', 'SH01', 45.00, 200),
-    ('shampoo detox', 'ativo', 'SH02', 45.00, 150),
-    ('shampoo hidratante', 'ativo', 'SH03', 45.00, 120),
-    ('shampoo nutritivo', 'ativo', 'SH04', 45.00, 180);
+	('Fall Limited Edition Sneakers', 'ativo', 'SN01', 125.00, 200.00, 1000,
+	ARRAY[
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-1-image-1.jpg?v=1642989900',
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-1-image-2.jpg?v=1642989901',
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-1-image-3.jpg?v=1642989900',
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-1-image-4.jpg?v=1642989900'
+	], 
+	'Nunca há um momento errado para ficar de pé. Criado para as quadras, mas levado para as ruas, o Fall Limited Edition Sneakers dá ao ícone do basquete dos anos 80 a elevação perfeita. Com seu design clássico de cano alto, essência esportiva e entressola elevada, ele permanece fiel ao DNA dos aros, permitindo que você canalize sua confiança a cada passo.'),
+	
+    ('Brown Kelp', 'ativo', 'SN02', 325.00, 350.00, 1000,
+	ARRAY[
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-2-image-1.jpg?v=1642994738',
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-2-image-2.jpg?v=1642994739',
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-2-image-3.jpg?v=1642994738',
+		'https://cdn.shopify.com/s/files/1/0605/7911/9344/files/product-2-image-4.jpg?v=1642994738'
+	], 
+	'Detalhes off-court e aparência robusta, com pelo menos 20% de material reciclado, essa bota usa material sintético na parte superior para ecoar a aparência clássica do ícone das quadras. Grandes saliências na sola proporcionam tração, enquanto um revestimento na parte superior ajuda a manter longe o frio e a umidade para que você possa enfrentar o inverno com estilo.');
 
 SELECT * FROM TB_PRODUCT;
 
@@ -81,25 +59,6 @@ WHERE id_product = 5;
 
 
 
-
--- CRIAR TABELA PEDIDO
-DROP TABLE IF EXISTS TB_ORDER;
-
-CREATE TABLE TB_ORDER (
-	id_order SERIAL PRIMARY KEY,
-  	num_order INTEGER UNIQUE NOT NULL,
-  	date_order TIMESTAMPTZ NOT NULL,
-  	qtda_products INTEGER NOT NULL,
-  	total_order NUMERIC(9, 2) NOT NULL,
-  	
-  	id_customer INTEGER NOT NULL,
-  
-  	FOREIGN KEY (id_customer)
-  	REFERENCES TB_CUSTOMER (id_customer) 
-  		ON UPDATE CASCADE 
-    	ON DELETE CASCADE
-  
-);
 
 INSERT INTO TB_ORDER (num_order, date_order, qtda_products, total_order, id_customer)
 VALUES
@@ -120,29 +79,6 @@ SET
 WHERE id_order = 1;
 
 
-
-
--- CRIAR TABELA PEDIDO <> PRODUTO
-DROP TABLE IF EXISTS TB_ORDER_PRODUCT;
-
-CREATE TABLE TB_ORDER_PRODUCT (
-	id_order INTEGER NOT NULL,
-  	id_product INTEGER NOT NULL,
-  	discount NUMERIC(5, 3) NOT NULL,
-  	quantity INTEGER NOT NULL,
-  	price NUMERIC(9, 2) NOT NULL,
-  	
-  	FOREIGN KEY (id_order)
-  	REFERENCES TB_ORDER (id_order) 
-  		ON UPDATE CASCADE 
-    	ON DELETE CASCADE,
-  
-  	FOREIGN KEY (id_product)
-  	REFERENCES TB_PRODUCT (id_product) 
-  		ON UPDATE CASCADE 
-    	ON DELETE CASCADE
-  
-);
 
 INSERT INTO TB_ORDER_PRODUCT (id_order, id_product, discount, quantity, price)
 VALUES

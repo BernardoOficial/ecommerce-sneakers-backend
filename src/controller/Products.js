@@ -7,11 +7,11 @@ const Products = {
         try {
 
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
 
-            const sql = `SELECT * FROM TB_PRODUCT`; 
+            const sql = `SELECT * FROM TB_PRODUCT`;
 
             const response = await connectionDatabase.query(sql);
             const products = response.rows;
@@ -43,7 +43,7 @@ const Products = {
         try {
 
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
 
@@ -92,7 +92,7 @@ const Products = {
         try {
 
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
 
@@ -132,7 +132,7 @@ const Products = {
         try {
 
             const configDatabase = {
-                connectionString: process.env.POSTGRES_DATABASE_TRANSPORTADORAS || "local"
+                connectionString: process.env.DATABASE_URL || "local"
             }
             const connectionDatabase = new Connection(configDatabase);
 
