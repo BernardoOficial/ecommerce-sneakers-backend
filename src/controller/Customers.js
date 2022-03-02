@@ -1,6 +1,36 @@
 const { Connection } = require("../database/connection");
+const { infoToken } = require("../utils/jwt");
 
 const Customers = {
+
+	async getCustomer(req, res) {
+
+		const token = req.headers.authorization.replace("Bearer ", "");
+		const payloadCustomer = infoToken(token);
+
+		const values = [
+			payloadCustomer.id_customer
+		]
+
+        try {
+
+            const configDatabase = {
+                connectionString: process.env.DATABASE_URL || "local"
+            }
+            const connectionDatabase = new Connection(configDatabase);
+
+            const sql = `SELECT * FROM TB_CUSTOMER WHERE id_customer = $1`;
+
+            const response = await connectionDatabase.query(sql, values);
+            const customers = response.rows;
+            
+            return res.status(200).json({ customers });
+            
+        } catch (error) {
+            return res.status(400).json({ error_message: error.message, error })
+        }
+
+    },
 
     async getCustomers(req, res) {
 
@@ -85,12 +115,12 @@ const Customers = {
             const sql = `
                         UPDATE TB_CUSTOMER
                         SET
-                            cpf = ?,
-                            email = ?,
-                            first_name = ?,
-                            last_name = ?,
-                            age = ? 
-                        WHERE id_customer = ?`;
+                            cpf = $1,
+                            email = $2,
+                            first_name = $3,
+                            last_name = $4,
+                            age = $5 
+                        WHERE id_customer = $6`;
 
             const response = await connectionDatabase.query(sql, values);
             const statusUpdate = response.rows;
@@ -117,7 +147,7 @@ const Customers = {
             }
             const connectionDatabase = new Connection(configDatabase);
 
-            const sql = `DELETE FROM TB_CUSTOMER WHERE id_customer = ?`;
+            const sql = `DELETE FROM TB_CUSTOMER WHERE id_customer = $1`;
 
             const response = await connectionDatabase.query(sql, values);
             const statusDelete = response.rows;

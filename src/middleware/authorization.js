@@ -1,8 +1,10 @@
-const { validateToken } = require("../utils/jwt");
+const { validateToken, infoToken } = require("../utils/jwt");
 
 function authorization(req, res, next) {
 
 	const authorization = req.headers.authorization;
+
+	infoToken(authorization.token)
 
 	if(!authorization) {
 		return res.status(401).json({ error: "passe o campo authorization pelo header" });
@@ -23,6 +25,7 @@ function authorization(req, res, next) {
 }
 
 const safeRoutes = [
+	"/customer",
 	"/customers",
 	"/orders",
 	"/payments"

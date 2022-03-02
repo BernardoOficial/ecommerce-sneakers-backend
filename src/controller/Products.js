@@ -15,7 +15,6 @@ const Products = {
 
             const response = await connectionDatabase.query(sql);
             const products = response.rows;
-            console.log(products);
 
             return res.status(200).json({ products });
             

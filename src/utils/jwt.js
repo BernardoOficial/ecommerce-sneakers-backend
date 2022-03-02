@@ -26,6 +26,17 @@ function validateToken(token) {
 
 	try {
 		const payload = jwt.verify(token, process.env.JWT_SECRET);
+		return true;
+	} catch (error) {
+		console.log(error.message);
+		return false;
+	}
+}
+
+function infoToken(token) {
+
+	try {
+		const payload = jwt.verify(token, process.env.JWT_SECRET);
 		return payload;
 	} catch (error) {
 		console.log(error.message);
@@ -35,5 +46,6 @@ function validateToken(token) {
 
 module.exports = {
 	generateToken,
-	validateToken
+	validateToken,
+	infoToken
 }
