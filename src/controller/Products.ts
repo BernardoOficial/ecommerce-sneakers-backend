@@ -1,8 +1,9 @@
-const { Connection } = require("../database/connection");
+import { Connection } from "../database/connection";
+import { Request, Response } from "express";
 
 const Products = {
 
-    async getProducts(req, res) {
+    async getProducts(req: Request, res: Response) {
 
         try {
 
@@ -24,7 +25,7 @@ const Products = {
 
     },
 
-    async postProduct(req, res) {
+    async postProduct(req: Request, res: Response) {
 
         const product = req.body;
 
@@ -72,7 +73,7 @@ const Products = {
 
     },
 
-    async updateProduct(req, res) {
+    async updateProduct(req: Request, res: Response) {
 
         const product = req.body;
 
@@ -123,7 +124,7 @@ const Products = {
 
     },
 
-    async deleteProduct(req, res) {
+    async deleteProduct(req: Request, res: Response) {
 
         const productId = req.params.id;
         const values = [ productId ];
@@ -151,4 +152,6 @@ const Products = {
 
 }
 
-module.exports = Products;
+export {
+	Products
+};

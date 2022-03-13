@@ -1,11 +1,19 @@
-const { Pool } = require('pg');
+import { Pool } from 'pg';
 const postgresUrlDatabaseLocal = process.env.DATABASE_URL_LOCALHOST;
+
+interface ConnectionContructor {
+	connectionString: string | "local"
+	max?: number
+	ssl?: {
+		rejectUnauthorized?: boolean
+	}
+}
 
 class Connection {
 
-	#db = null
+	#db: Pool = null
 
-	constructor(configDatabase) {
+	constructor(configDatabase: ConnectionContructor) {
 		if(!configDatabase) {
 			throw new Error("Configurações do banco de dados não informadas");
 		}
@@ -41,7 +49,7 @@ class Connection {
 		}
     }
 
-    async query(sql, values = []) {
+    async query(sql: string, values = []) {
 		try {
 			const response = await this.#db.query(sql, values);
 			return response;
@@ -55,6 +63,6 @@ class Connection {
 	}
 }
 
-module.exports = {
+export {
     Connection
 };

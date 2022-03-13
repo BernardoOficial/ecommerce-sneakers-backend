@@ -1,8 +1,9 @@
-const { Connection } = require("../database/connection");
+import { Connection } from "../database/connection";
+import { Request, Response } from "express";
 
 const Orders = {
 
-    async getOrders(req, res) {
+    async getOrders(req: Request, res: Response) {
 
         try {
 
@@ -25,7 +26,7 @@ const Orders = {
 
     },
     
-    async postOrder(req, res) {
+    async postOrder(req: Request, res: Response) {
 
         const order = req.body;
 
@@ -60,7 +61,7 @@ const Orders = {
 
     },
     
-    async updateOrder(req, res) {
+    async updateOrder(req: Request, res: Response) {
 
         const order = req.body;
 
@@ -102,7 +103,7 @@ const Orders = {
 
     },
 
-    async deleteOrder(req, res) {
+    async deleteOrder(req: Request, res: Response) {
 
         const orderid = req.params.id;
         const values = [ orderid ];
@@ -116,7 +117,7 @@ const Orders = {
 
             const sql = `DELETE FROM TB_ORDER WHERE id_order = ?`;
 
-            const response = await Connection.query(sql, values);
+            const response = await connectionDatabase.query(sql, values);
             const statusDelete = response.rows;
             console.log(statusDelete);
 
@@ -130,4 +131,6 @@ const Orders = {
 
 }
 
-module.exports = Orders;
+export {
+	Orders
+};

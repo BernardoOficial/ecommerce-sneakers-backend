@@ -1,6 +1,7 @@
-const routerToken = require("express").Router();
-const Token = require("../controller/Token");
+import { Router } from "express";
+import { Token } from "../controller/Token";
+const routerToken = Router();
 routerToken.get("/token", Token.getToken);
 routerToken.post("/token", Token.postToken);
 routerToken.patch("/token", Token.updateToken);
-module.exports = routerToken;
+export { routerToken }

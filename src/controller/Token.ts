@@ -1,9 +1,17 @@
-const { Connection } = require("../database/connection");
-const { generateToken } = require("../utils/jwt");
+import { Connection } from "../database/connection";
+import { generateToken } from "../utils/jwt";
+import { Request, Response } from "express";
+import { QueryResult } from "pg";
+
+interface CustomerProps {
+	password: string
+	email: string
+	id_customer: number
+}
 
 const Token = {
 
-    async getToken(req, res) {
+    async getToken(req: Request, res: Response) {
 
         try {
 
@@ -26,7 +34,7 @@ const Token = {
 
     },
     
-    async postToken(req, res) {
+    async postToken(req: Request, res: Response) {
         const customer = req.body;
 		const valuesSelectCustomer = [customer.email];
 
@@ -39,7 +47,11 @@ const Token = {
 
             const sqlSelectCustomer = `SELECT id_customer, email, password FROM TB_CUSTOMER WHERE email = $1`; 
 
-            const responseSelectCustomer = await connectionDatabase.query(sqlSelectCustomer, valuesSelectCustomer);
+			interface responseDatabase extends QueryResult {
+				rows: CustomerProps[]
+			}
+
+            const responseSelectCustomer: responseDatabase = await connectionDatabase.query(sqlSelectCustomer, valuesSelectCustomer);
 			const findCustomers = responseSelectCustomer.rows;
 
 			if(!findCustomers.length) {
@@ -78,7 +90,7 @@ const Token = {
 
     },
     
-    async updateToken(req, res) {
+    async updateToken(req: Request, res: Response) {
 
         const customer = req.body;
 
@@ -122,4 +134,6 @@ const Token = {
 
 }
 
-module.exports = Token;
+export {
+	Token
+};

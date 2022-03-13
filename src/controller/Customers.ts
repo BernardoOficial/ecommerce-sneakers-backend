@@ -1,12 +1,18 @@
-const { Connection } = require("../database/connection");
-const { infoToken } = require("../utils/jwt");
+import { Connection } from "../database/connection";
+import { infoToken } from "../utils/jwt";
+import { Request, Response } from "express";
 
 const Customers = {
 
-	async getCustomer(req, res) {
+	async getCustomer(req: Request, res: Response) {
 
 		const token = req.headers.authorization.replace("Bearer ", "");
+
 		const payloadCustomer = infoToken(token);
+
+		console.log(payloadCustomer);
+
+		if(!payloadCustomer || typeof payloadCustomer === "string") { return }
 
 		const values = [
 			payloadCustomer.id_customer
@@ -19,8 +25,8 @@ const Customers = {
             }
             const connectionDatabase = new Connection(configDatabase);
 
-            const sql = `SELECT * FROM TB_CUSTOMER WHERE id_customer = $1`;
-
+            const sql = `SELECT id_customer, cpf, email, first_name, last_name, date_birth FROM TB_CUSTOMER WHERE id_customer = $1`;
+			
             const response = await connectionDatabase.query(sql, values);
             const customers = response.rows;
             
@@ -32,7 +38,7 @@ const Customers = {
 
     },
 
-    async getCustomers(req, res) {
+    async getCustomers(req: Request, res: Response) {
 
         try {
 
@@ -55,7 +61,7 @@ const Customers = {
 
     },
     
-    async postCustomer(req, res) {
+    async postCustomer(req: Request, res: Response) {
 
         const customer = req.body;
         console.log(customer);
@@ -92,7 +98,7 @@ const Customers = {
 
     },
     
-    async updateCustomer(req, res) {
+    async updateCustomer(req: Request, res: Response) {
 
         const customer = req.body;
 
@@ -134,7 +140,7 @@ const Customers = {
 
     },
     
-    async deleteCustomer(req, res) {
+    async deleteCustomer(req: Request, res: Response) {
 
         const customerId = req.params.id;
 
@@ -161,82 +167,6 @@ const Customers = {
 
     },
 
-    helpers: {
-
-        validFields(obj) {
-
-            const fieldsDeclarate = {
-                "cpf": 0,
-                "email": 0,
-                "first_name": 0,
-                "last_name": 0,
-                "age": 0,
-            }
-
-            const fields = Object.entries(obj);
-
-            let fieldsInvalid = fields.map(function([key, value]) {
-                return {
-                    field: key,
-                    value,
-                    errors: []
-                }
-            })
-
-            console.log(fieldsInvalid);
-
-            fieldsInvalid.forEach(findFieldsVoid);
-
-            fieldsInvalid = Object.entries(fieldsDeclarate).map(function([key, value]) {
-
-                if(value === 0) {
-                    return {
-                        field: key,
-                        value,
-                        errors: [].push(`Campo ${key} não foi enviado`)
-                    }
-                }
-                else {
-                    return {
-                        field: key,
-                        value,
-                        errors: []
-                    }
-                }
-
-            })
-
-            fieldsInvalid = fieldsInvalid.map(findFieldsQtdaCaracters);
-
-            function findFieldsVoid(objField) {
-                fieldsDeclarate[objField.field]++;
-            }
-            
-            function findFieldsQtdaCaracters(objField) {
-
-                const { field, value, errors } = objField;
-
-                if(value.length === 0) {
-                    return {
-                        field,
-                        value,
-                        errors: errors.push(`Campo ${field} não está preenchido`)
-                    }
-                }
-                return field;
-
-            }
-
-            fieldsInvalid = fieldsInvalid.filter(function(field) {
-                return field.errors.length > 0;
-            })
-
-            console.log(fieldsInvalid);
-
-            return fieldsInvalid;
-        }
-    }
-
 }
 
-module.exports = Customers;
+export { Customers };
